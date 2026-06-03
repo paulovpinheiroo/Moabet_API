@@ -3,7 +3,7 @@ package com.api.moabet.models;
 import java.time.LocalDateTime;
 
 import com.api.moabet.models.enums.Result;
-import com.api.moabet.models.enums.Status;
+import com.api.moabet.models.enums.StatusEvent;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +35,7 @@ public class Event {
     private Double odds;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private StatusEvent status;
     @Enumerated(EnumType.STRING)
     @Column(name = "result")
     private Result result;
