@@ -1,7 +1,6 @@
 package com.api.moabet.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,6 +26,17 @@ public class UserService {
                 .toList();
     }
 
+    public UserResponseDTO getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserResponseDTO(
+                        user.getName(),
+                        user.getEmail(),
+                        user.getCpf(),
+                        user.getPhone()))
+                .orElse(null); // Rertorna null porém o codigo de status HTTP deve ser 404, será tratado na
+                               // fase de tratamento de erros.
+    }
+
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = new User();
         user.setName(userRequestDTO.name());
@@ -42,4 +52,7 @@ public class UserService {
                 savedUser.getPhone());
     }
 
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }
