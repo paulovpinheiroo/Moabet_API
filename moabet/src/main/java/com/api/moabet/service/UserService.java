@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import com.api.moabet.dto.users.UserRequestDTO;
 import com.api.moabet.dto.users.UserResponseDTO;
 import com.api.moabet.models.User;
+import com.api.moabet.models.Wallet;
 import com.api.moabet.repository.UserRepository;
+import com.api.moabet.repository.WalletRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
 
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -45,6 +48,10 @@ public class UserService {
         user.setCpf(userRequestDTO.cpf());
         user.setPhone(userRequestDTO.phone());
         User savedUser = userRepository.save(user);
+        Wallet wallet = new Wallet();
+        wallet.setUser(savedUser);
+        wallet.setBalance(0.0);
+        walletRepository.save(wallet);
         return new UserResponseDTO(
                 savedUser.getName(),
                 savedUser.getEmail(),
