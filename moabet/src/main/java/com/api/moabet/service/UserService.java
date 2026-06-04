@@ -24,7 +24,7 @@ public class UserService {
                         user.getEmail(),
                         user.getCpf(),
                         user.getPhone()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {

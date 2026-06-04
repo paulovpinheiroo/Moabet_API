@@ -1,7 +1,6 @@
 package com.api.moabet.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.moabet.dto.users.UserRequestDTO;
 import com.api.moabet.dto.users.UserResponseDTO;
-import com.api.moabet.models.User;
 import com.api.moabet.service.UserService;
 
 import lombok.RequiredArgsConstructor;
