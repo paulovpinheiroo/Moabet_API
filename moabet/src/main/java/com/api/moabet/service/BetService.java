@@ -1,0 +1,77 @@
+package com.api.moabet.service;
+
+import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
+
+import com.api.moabet.dto.bet.BetRequestDTO;
+import com.api.moabet.dto.bet.BetResponseDTO;
+import com.api.moabet.models.Bet;
+import com.api.moabet.models.Event;
+import com.api.moabet.models.Transaction;
+import com.api.moabet.models.User;
+import com.api.moabet.models.Wallet;
+import com.api.moabet.models.enums.StatusBet;
+import com.api.moabet.models.enums.StatusEvent;
+import com.api.moabet.models.enums.Type;
+import com.api.moabet.repository.BetRepository;
+import com.api.moabet.repository.EventRepository;
+import com.api.moabet.repository.TransactionRepository;
+import com.api.moabet.repository.UserRepository;
+import com.api.moabet.repository.WalletRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class BetService {
+    private final BetRepository betRepository;
+    private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
+    private final EventRepository eventRepository;
+    private final TransactionRepository transactionRepository;
+
+    public BetResponseDTO createBet(BetRequestDTO betRequestDTO) {
+        Bet bet = new Bet();
+        User user = userRepository.findById(betRequestDTO.userId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Event event = eventRepository.findById(betRequestDTO.eventId())
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        Wallet wallet = walletRepository.findByUserId(betRequestDTO.userId())
+                .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+        Bet savedBet = null;
+        bet.setAmount(betRequestDTO.amount());
+
+        if (wallet.getBalance() >= bet.getAmount()) {
+            if (event.getStatus() == StatusEvent.OPEN) {
+                wallet.setBalance(wallet.getBalance() - bet.getAmount());
+                walletRepository.save(wallet);
+                bet.setUser(user);
+                bet.setEvent(event);
+                bet.setCreatedAt(LocalDateTime.now());
+                bet.setStatus(StatusBet.PENDING);
+                Transaction transaction = new Transaction();
+                transaction.setAmount(betRequestDTO.amount());
+                transaction.setType(Type.BET);
+                transaction.setCreatedAt(LocalDateTime.now());
+                transaction.setWallet(wallet);
+                transactionRepository.save(transaction);
+                savedBet = betRepository.save(bet);
+            } else {
+                throw new IllegalArgumentException("Não é possível apostar em um evento fechado ou finalizado.");
+            }
+        } else {
+            throw new IllegalArgumentException("Saldo insuficiente para realizar a aposta.");
+        }
+
+        return new BetResponseDTO(
+                savedBet.getId(),
+                savedBet.getAmount(),
+                savedBet.getStatus(),
+                savedBet.getCreatedAt(),
+                savedBet.getUser().getId(),
+                savedBet.getEvent().getId());
+        // Tratar exceções e retornar mensagens de erro apropriadas
+    }
+
+}
