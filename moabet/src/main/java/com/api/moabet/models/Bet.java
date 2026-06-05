@@ -26,7 +26,7 @@ import lombok.Setter;
 public class Bet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id_bet", nullable = false, unique = true)
     private Long id;
     @Column(name = "amount", nullable = false)
     private Double amount;
