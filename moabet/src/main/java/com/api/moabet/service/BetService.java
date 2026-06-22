@@ -1,16 +1,20 @@
 package com.api.moabet.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.bet.BetRequestDTO;
 import com.api.moabet.dto.bet.BetResponseDTO;
+import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.models.Bet;
 import com.api.moabet.models.Event;
 import com.api.moabet.models.Transaction;
 import com.api.moabet.models.User;
 import com.api.moabet.models.Wallet;
+import com.api.moabet.models.enums.Result;
 import com.api.moabet.models.enums.StatusBet;
 import com.api.moabet.models.enums.StatusEvent;
 import com.api.moabet.models.enums.Type;
@@ -25,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BetService {
+
+    private final TransactionService transactionService;
     private final BetRepository betRepository;
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
@@ -74,4 +80,37 @@ public class BetService {
         // Tratar exceções e retornar mensagens de erro apropriadas
     }
 
+    public List<BetResponseDTO> resolveBets(Long eventId, Result result) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("event not found"));
+        List<Bet> bets = betRepository.findByEventIdAndStatus(eventId, StatusBet.PENDING);
+        List<BetResponseDTO> resolvedBets = new ArrayList<>();
+        for (Bet bet : bets) {
+            if (event.getResult() == Result.WIN) {
+                // bet ganhou
+                bet.setStatus(StatusBet.WON);
+                Long userId = bet.getUser().getId();
+                Wallet wallet = walletRepository.findByUserId(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+                Double amount = bet.getAmount();
+                Double odd = event.getOdds();
+                Double valor = amount * odd;
+                // chamar o service transaction pra fazer o credito da bet
+                transactionService.creditWin(wallet, valor);
+                betRepository.save(bet);
+            } else {
+                bet.setStatus(StatusBet.LOST);
+                betRepository.save(bet);
+            }
+            resolvedBets.add(new BetResponseDTO(
+                    bet.getId(),
+                    bet.getAmount(),
+                    bet.getStatus(),
+                    bet.getCreatedAt(),
+                    bet.getUser().getId(),
+                    bet.getEvent().getId()));
+        }
+
+        return resolvedBets;
+    }
 }
