@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.api.moabet.models.enums.Result;
+import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
 import com.api.moabet.service.EventService;
@@ -21,11 +23,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventController {
 
+    private final EventRequestDTO eventRequestDTO;
     private final EventService eventService;
 
     @PostMapping
     public EventResponseDTO createEvent(@RequestBody EventRequestDTO eventRequestDTO) {
         return eventService.createEvent(eventRequestDTO);
+    }
+
+    @PutMapping("/{id}/finish")
+    public EventResponseDTO finishEvent(@PathVariable Long id, @RequestBody EventFinishDTO result) {
+        return eventService.finishEvent(id, result);
     }
 
     @GetMapping

@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
 import com.api.moabet.models.Event;
+import com.api.moabet.models.enums.Result;
 import com.api.moabet.models.enums.StatusEvent;
 import com.api.moabet.repository.EventRepository;
 
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
+    private final BetService betService;
 
     public EventResponseDTO createEvent(EventRequestDTO event) {
         Event newEvent = new Event();
@@ -33,6 +36,21 @@ public class EventService {
                 savedEvent.getOdds(),
                 savedEvent.getStatus(),
                 savedEvent.getResult());
+    }
+
+    public EventResponseDTO finishEvent(Long eventId, EventFinishDTO result) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        event.setStatus(StatusEvent.FINISHED);
+        event.setResult(result.result());
+        betService.resolveBets(eventId, result.result());
+        eventRepository.save(event);
+        return new EventResponseDTO(
+                event.getName(),
+                event.getDescription(),
+                event.getOdds(),
+                event.getStatus(),
+                event.getResult());
     }
 
     public EventResponseDTO getEventById(Long id) {
