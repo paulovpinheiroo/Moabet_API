@@ -1,4 +1,4 @@
-package com.api.moabet.dto.transanction;
+package com.api.moabet.dto.transaction;
 
 import java.time.LocalDateTime;
 
