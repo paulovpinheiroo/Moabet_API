@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.api.moabet.dto.transanction.DepositRequestDTO;
-import com.api.moabet.dto.transanction.DepositResponseDTO;
+import com.api.moabet.dto.transaction.DepositRequestDTO;
+import com.api.moabet.dto.transaction.DepositResponseDTO;
 import com.api.moabet.models.Transaction;
 import com.api.moabet.models.Wallet;
 import com.api.moabet.models.enums.Type;
@@ -36,5 +36,17 @@ public class TransactionService {
                 savedTransaction.getId(),
                 savedTransaction.getCreatedAt(),
                 savedTransaction.getType());
+    }
+
+    public void creditWin(Wallet wallet, Double amount) {
+        wallet.setBalance(wallet.getBalance() + amount);
+        walletRepository.save(wallet);
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setType(Type.WIN);
+        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setWallet(wallet);
+        transactionRepository.save(transaction);
     }
 }
