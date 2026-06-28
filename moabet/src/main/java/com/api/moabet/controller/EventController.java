@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.api.moabet.models.enums.Result;
 import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventController {
 
-    private final EventRequestDTO eventRequestDTO;
     private final EventService eventService;
 
     @PostMapping
