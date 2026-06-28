@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.bet.BetRequestDTO;
 import com.api.moabet.dto.bet.BetResponseDTO;
-import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.models.Bet;
 import com.api.moabet.models.Event;
 import com.api.moabet.models.Transaction;
@@ -86,7 +85,7 @@ public class BetService {
         List<Bet> bets = betRepository.findByEventIdAndStatus(eventId, StatusBet.PENDING);
         List<BetResponseDTO> resolvedBets = new ArrayList<>();
         for (Bet bet : bets) {
-            if (event.getResult() == Result.WIN) {
+            if (event.getResult() == result) {
                 // bet ganhou
                 bet.setStatus(StatusBet.WON);
                 Long userId = bet.getUser().getId();
