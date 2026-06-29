@@ -2,6 +2,7 @@ package com.api.moabet.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.users.UserRequestDTO;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -44,7 +46,7 @@ public class UserService {
         User user = new User();
         user.setName(userRequestDTO.name());
         user.setEmail(userRequestDTO.email());
-        user.setPassword(userRequestDTO.password());
+        user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
         user.setCpf(userRequestDTO.cpf());
         user.setPhone(userRequestDTO.phone());
         User savedUser = userRepository.save(user);
