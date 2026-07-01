@@ -8,6 +8,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 
 @Entity(name = "User")
@@ -15,7 +22,7 @@ import jakarta.persistence.Column;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user", nullable = false, unique = true)
@@ -30,4 +37,14 @@ public class User {
     private String cpf;
     @Column(name = "phone")
     private String phone;
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(); // sem roles por enquanto
+    }
 }
