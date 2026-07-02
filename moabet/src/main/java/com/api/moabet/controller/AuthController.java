@@ -10,6 +10,7 @@ import com.api.moabet.dto.users.login.UserLoginResponseDTO;
 import com.api.moabet.service.AuthService;
 import com.api.moabet.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +23,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public UserResponseDTO registerUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public UserResponseDTO registerUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         return userService.createUser(userRequestDTO);
     }
 
     @PostMapping("/login")
-    public UserLoginResponseDTO loginUser(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+    public UserLoginResponseDTO loginUser(@Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
         return authService.login(userLoginRequestDTO);
     }
 }

@@ -9,6 +9,7 @@ import com.api.moabet.dto.bet.BetRequestDTO;
 import com.api.moabet.dto.bet.BetResponseDTO;
 import com.api.moabet.service.BetService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -19,7 +20,7 @@ public class BetController {
     private final BetService betService;
 
     @PostMapping
-    public BetResponseDTO createBet(@RequestBody BetRequestDTO betRequestDTO) {
+    public BetResponseDTO createBet(@Valid @RequestBody BetRequestDTO betRequestDTO) {
         return betService.createBet(betRequestDTO);
     }
 }

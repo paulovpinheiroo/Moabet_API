@@ -15,6 +15,7 @@ import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
 import com.api.moabet.service.EventService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,12 +26,12 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public EventResponseDTO createEvent(@RequestBody EventRequestDTO eventRequestDTO) {
+    public EventResponseDTO createEvent(@Valid @RequestBody EventRequestDTO eventRequestDTO) {
         return eventService.createEvent(eventRequestDTO);
     }
 
     @PutMapping("/{id}/finish")
-    public EventResponseDTO finishEvent(@PathVariable Long id, @RequestBody EventFinishDTO result) {
+    public EventResponseDTO finishEvent(@PathVariable Long id, @Valid @RequestBody EventFinishDTO result) {
         return eventService.finishEvent(id, result);
     }
 

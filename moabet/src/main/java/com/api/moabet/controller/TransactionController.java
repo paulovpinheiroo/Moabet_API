@@ -10,6 +10,7 @@ import com.api.moabet.dto.transaction.DepositRequestDTO;
 import com.api.moabet.dto.transaction.DepositResponseDTO;
 import com.api.moabet.service.TransactionService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -19,7 +20,8 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/{walletId}/deposit")
-    public DepositResponseDTO deposit(@PathVariable Long walletId, @RequestBody DepositRequestDTO depositRequestDTO) {
+    public DepositResponseDTO deposit(@PathVariable Long walletId,
+            @Valid @RequestBody DepositRequestDTO depositRequestDTO) {
         return transactionService.deposit(walletId, depositRequestDTO);
     }
 }
