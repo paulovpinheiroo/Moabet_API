@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.bet.BetRequestDTO;
 import com.api.moabet.dto.bet.BetResponseDTO;
+import com.api.moabet.exception.BusinessException;
+import com.api.moabet.exception.ResourceNotFoundException;
 import com.api.moabet.models.Bet;
 import com.api.moabet.models.Event;
 import com.api.moabet.models.Transaction;
@@ -39,11 +41,11 @@ public class BetService {
     public BetResponseDTO createBet(BetRequestDTO betRequestDTO) {
         Bet bet = new Bet();
         User user = userRepository.findById(betRequestDTO.userId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Event event = eventRepository.findById(betRequestDTO.eventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         Wallet wallet = walletRepository.findByUserId(betRequestDTO.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         Bet savedBet = null;
         bet.setAmount(betRequestDTO.amount());
 
@@ -63,10 +65,10 @@ public class BetService {
                 transactionRepository.save(transaction);
                 savedBet = betRepository.save(bet);
             } else {
-                throw new IllegalArgumentException("Não é possível apostar em um evento fechado ou finalizado.");
+                throw new BusinessException("Não é possível apostar em um evento fechado ou finalizado.");
             }
         } else {
-            throw new IllegalArgumentException("Saldo insuficiente para realizar a aposta.");
+            throw new BusinessException("Saldo insuficiente para realizar a aposta.");
         }
 
         return new BetResponseDTO(
@@ -81,7 +83,7 @@ public class BetService {
 
     public List<BetResponseDTO> resolveBets(Long eventId, Result result) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("event not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("event not found"));
         List<Bet> bets = betRepository.findByEventIdAndStatus(eventId, StatusBet.PENDING);
         List<BetResponseDTO> resolvedBets = new ArrayList<>();
         for (Bet bet : bets) {
@@ -90,7 +92,7 @@ public class BetService {
                 bet.setStatus(StatusBet.WON);
                 Long userId = bet.getUser().getId();
                 Wallet wallet = walletRepository.findByUserId(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
                 Double amount = bet.getAmount();
                 Double odd = event.getOdds();
                 Double valor = amount * odd;

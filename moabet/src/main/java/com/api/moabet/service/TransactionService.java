@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.transaction.DepositRequestDTO;
 import com.api.moabet.dto.transaction.DepositResponseDTO;
+import com.api.moabet.exception.ResourceNotFoundException;
 import com.api.moabet.models.Transaction;
 import com.api.moabet.models.Wallet;
 import com.api.moabet.models.enums.Type;
@@ -26,7 +27,7 @@ public class TransactionService {
         transaction.setType(Type.DEPOSIT);
         transaction.setCreatedAt(LocalDateTime.now());
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         transaction.setWallet(wallet);
         wallet.setBalance(wallet.getBalance() + depositRequestDTO.amount());
         walletRepository.save(wallet);

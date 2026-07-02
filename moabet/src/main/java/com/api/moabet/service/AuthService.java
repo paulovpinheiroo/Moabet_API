@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.users.login.UserLoginRequestDTO;
 import com.api.moabet.dto.users.login.UserLoginResponseDTO;
+import com.api.moabet.exception.BusinessException;
+import com.api.moabet.exception.ResourceNotFoundException;
 import com.api.moabet.models.User;
 import com.api.moabet.repository.UserRepository;
 
@@ -19,11 +21,11 @@ public class AuthService {
 
     public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
         User user = userRepository.findByEmail(userLoginRequestDTO.email())
-                .orElseThrow(() -> new IllegalArgumentException("Email not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
         if (passwordEncoder.matches(userLoginRequestDTO.password(), user.getPassword())) {
             return new UserLoginResponseDTO(tokenService.generateToken(user));
         } else {
-            throw new IllegalArgumentException("Invalid password");
+            throw new BusinessException("Invalid password");
         }
     }
 

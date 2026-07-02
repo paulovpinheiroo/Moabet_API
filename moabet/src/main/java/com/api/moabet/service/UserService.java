@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.users.UserRequestDTO;
 import com.api.moabet.dto.users.UserResponseDTO;
+import com.api.moabet.exception.BusinessException;
+import com.api.moabet.exception.ResourceNotFoundException;
 import com.api.moabet.models.User;
 import com.api.moabet.models.Wallet;
 import com.api.moabet.repository.UserRepository;
@@ -38,11 +40,13 @@ public class UserService {
                         user.getEmail(),
                         user.getCpf(),
                         user.getPhone()))
-                .orElse(null); // Rertorna null porém o codigo de status HTTP deve ser 404, será tratado na
-                               // fase de tratamento de erros.
+                .orElseThrow(() -> new ResourceNotFoundException("User not found")); // fase de tratamento de erros.
     }
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+        if (userRepository.findByEmail(userRequestDTO.email()).isPresent()) {
+            throw new BusinessException("Email already exists");
+        }
         User user = new User();
         user.setName(userRequestDTO.name());
         user.setEmail(userRequestDTO.email());

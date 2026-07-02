@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
+import com.api.moabet.exception.ResourceNotFoundException;
 import com.api.moabet.models.Event;
 import com.api.moabet.models.enums.StatusEvent;
 import com.api.moabet.repository.EventRepository;
@@ -39,7 +40,7 @@ public class EventService {
 
         public EventResponseDTO finishEvent(Long eventId, EventFinishDTO result) {
                 Event event = eventRepository.findById(eventId)
-                                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
                 event.setStatus(StatusEvent.FINISHED);
                 event.setResult(result.result());
                 betService.resolveBets(eventId, result.result());
@@ -60,9 +61,13 @@ public class EventService {
                                                 event.getOdds(),
                                                 event.getStatus(),
                                                 event.getResult()))
-                                .orElse(null); // Rertorna null porém o codigo de status HTTP deve ser 404, será tratado
-                                               // na
-                                               // fase de tratamento de erros.
+                                .orElseThrow(() -> new ResourceNotFoundException("Event not found")); // Rertorna null
+                                                                                                      // porém o codigo
+                                                                                                      // de status HTTP
+                                                                                                      // deve ser 404,
+                                                                                                      // será tratado
+                // na
+                // fase de tratamento de erros.
         }
 
         public List<EventResponseDTO> getAllEvents() {
