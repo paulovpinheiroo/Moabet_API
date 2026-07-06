@@ -1,5 +1,6 @@
 package com.api.moabet.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.api.moabet.models.enums.Result;
@@ -32,7 +33,7 @@ public class Event {
     @Column(name = "description")
     private String description;
     @Column(name = "odds", nullable = false)
-    private Double odds;
+    private BigDecimal odds;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusEvent status;

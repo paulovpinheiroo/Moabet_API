@@ -1,5 +1,6 @@
 package com.api.moabet.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.api.moabet.models.enums.StatusBet;
@@ -29,7 +30,7 @@ public class Bet {
     @Column(name = "id_bet", nullable = false, unique = true)
     private Long id;
     @Column(name = "amount", nullable = false)
-    private Double amount;
+    private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusBet status;

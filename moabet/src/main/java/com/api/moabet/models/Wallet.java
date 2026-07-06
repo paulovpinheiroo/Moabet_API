@@ -1,5 +1,7 @@
 package com.api.moabet.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +25,7 @@ public class Wallet {
     @Column(name = "id_wallet", nullable = false, unique = true)
     private Long id;
     @Column(name = "balance", nullable = false)
-    private Double balance;
+    private BigDecimal balance;
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false, unique = true)
     private User user;
