@@ -1,5 +1,6 @@
 package com.api.moabet.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +57,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
         Wallet wallet = new Wallet();
         wallet.setUser(savedUser);
-        wallet.setBalance(0.0);
+        wallet.setBalance(BigDecimal.ZERO);
         walletRepository.save(wallet);
         return new UserResponseDTO(
                 savedUser.getName(),

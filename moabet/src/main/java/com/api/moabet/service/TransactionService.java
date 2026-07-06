@@ -1,5 +1,6 @@
 package com.api.moabet.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class TransactionService {
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         transaction.setWallet(wallet);
-        wallet.setBalance(wallet.getBalance() + depositRequestDTO.amount());
+        wallet.setBalance(wallet.getBalance().add(depositRequestDTO.amount()));
         walletRepository.save(wallet);
         Transaction savedTransaction = transactionRepository.save(transaction);
         return new DepositResponseDTO(
@@ -39,8 +40,8 @@ public class TransactionService {
                 savedTransaction.getType());
     }
 
-    public void creditWin(Wallet wallet, Double amount) {
-        wallet.setBalance(wallet.getBalance() + amount);
+    public void creditWin(Wallet wallet, BigDecimal amount) {
+        wallet.setBalance(wallet.getBalance().add(amount));
         walletRepository.save(wallet);
 
         Transaction transaction = new Transaction();

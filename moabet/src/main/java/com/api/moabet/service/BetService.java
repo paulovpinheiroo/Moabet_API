@@ -1,5 +1,6 @@
 package com.api.moabet.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +50,9 @@ public class BetService {
         Bet savedBet = null;
         bet.setAmount(betRequestDTO.amount());
 
-        if (wallet.getBalance() >= bet.getAmount()) {
+        if (wallet.getBalance().compareTo(bet.getAmount()) >= 0) {
             if (event.getStatus() == StatusEvent.OPEN) {
-                wallet.setBalance(wallet.getBalance() - bet.getAmount());
+                wallet.setBalance(wallet.getBalance().subtract(bet.getAmount()));
                 walletRepository.save(wallet);
                 bet.setUser(user);
                 bet.setEvent(event);
@@ -93,9 +94,9 @@ public class BetService {
                 Long userId = bet.getUser().getId();
                 Wallet wallet = walletRepository.findByUserId(userId)
                         .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-                Double amount = bet.getAmount();
-                Double odd = event.getOdds();
-                Double valor = amount * odd;
+                BigDecimal amount = bet.getAmount();
+                BigDecimal odd = event.getOdds();
+                BigDecimal valor = amount.multiply(odd);
                 // chamar o service transaction pra fazer o credito da bet
                 transactionService.creditWin(wallet, valor);
                 betRepository.save(bet);
