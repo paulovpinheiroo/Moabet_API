@@ -26,21 +26,29 @@ public class UserService {
 
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserResponseDTO(
-                        user.getName(),
-                        user.getEmail(),
-                        user.getCpf(),
-                        user.getPhone()))
+                .map(user -> {
+                    Wallet wallet = walletRepository.findByUserId(user.getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+                    return new UserResponseDTO(
+                            user.getName(),
+                            user.getEmail(),
+                            user.getCpf(),
+                            user.getPhone(),
+                            wallet.getBalance());
+                })
                 .toList();
     }
 
     public UserResponseDTO getUserById(Long id) {
+        Wallet wallet = walletRepository.findByUserId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         return userRepository.findById(id)
                 .map(user -> new UserResponseDTO(
                         user.getName(),
                         user.getEmail(),
                         user.getCpf(),
-                        user.getPhone()))
+                        user.getPhone(),
+                        wallet.getBalance()))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found")); // fase de tratamento de erros.
     }
 
@@ -63,7 +71,8 @@ public class UserService {
                 savedUser.getName(),
                 savedUser.getEmail(),
                 savedUser.getCpf(),
-                savedUser.getPhone());
+                savedUser.getPhone(),
+                wallet.getBalance());
     }
 
     public void deleteUser(Long id) {
