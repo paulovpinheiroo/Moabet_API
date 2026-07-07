@@ -1,5 +1,6 @@
 package com.api.moabet.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class TransactionController {
     private final TransactionService transactionService;
 
+    @PreAuthorize("hasRole('ADMIN') or @walletSecurityService.isOwner(#walletId, authentication.principal.id)")
     @PostMapping("/{walletId}/deposit")
     public DepositResponseDTO deposit(@PathVariable Long walletId,
             @Valid @RequestBody DepositRequestDTO depositRequestDTO) {
