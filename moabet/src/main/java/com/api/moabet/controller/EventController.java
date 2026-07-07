@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.api.moabet.dto.bet.BetResponseDTO;
 import com.api.moabet.dto.event.EventFinishDTO;
 import com.api.moabet.dto.event.EventRequestDTO;
 import com.api.moabet.dto.event.EventResponseDTO;
+import com.api.moabet.service.BetService;
 import com.api.moabet.service.EventService;
 
 import jakarta.validation.Valid;
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventController {
 
+    private final BetService betService;
     private final EventService eventService;
 
     @PostMapping("/create")
@@ -41,6 +45,13 @@ public class EventController {
     @GetMapping
     public List<EventResponseDTO> getAllEvents() {
         return eventService.getAllEvents();
+    }
+
+
+    @GetMapping("/{id}/bets")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<BetResponseDTO> getBetsByEventId(@PathVariable Long id) {
+        return betService.getBetsByEventId(id);
     }
 
     @GetMapping("/{id}")

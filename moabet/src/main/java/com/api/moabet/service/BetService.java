@@ -113,4 +113,19 @@ public class BetService {
 
         return resolvedBets;
     }
+
+    public List<BetResponseDTO> getBetsByEventId(Long eventId) {
+        List<Bet> bets = betRepository.findAllByEventId(eventId);
+        List<BetResponseDTO> betResponseDTOs = new ArrayList<>();
+        for (Bet bet : bets) {
+            betResponseDTOs.add(new BetResponseDTO(
+                    bet.getId(),
+                    bet.getAmount(),
+                    bet.getStatus(),
+                    bet.getCreatedAt(),
+                    bet.getUser().getId(),
+                    bet.getEvent().getId()));
+        }
+        return betResponseDTOs;
+    }
 }

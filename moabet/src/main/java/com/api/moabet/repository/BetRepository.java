@@ -11,4 +11,5 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
 
     List<Bet> findByEventIdAndStatus(Long eventId, StatusBet status);
 
+    List<Bet> findAllByEventId(Long eventId);
 }
