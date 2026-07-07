@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.api.moabet.dto.bet.BetRequestDTO;
@@ -23,7 +24,6 @@ import com.api.moabet.models.enums.Type;
 import com.api.moabet.repository.BetRepository;
 import com.api.moabet.repository.EventRepository;
 import com.api.moabet.repository.TransactionRepository;
-import com.api.moabet.repository.UserRepository;
 import com.api.moabet.repository.WalletRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,18 +34,16 @@ public class BetService {
 
     private final TransactionService transactionService;
     private final BetRepository betRepository;
-    private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final EventRepository eventRepository;
     private final TransactionRepository transactionRepository;
 
     public BetResponseDTO createBet(BetRequestDTO betRequestDTO) {
         Bet bet = new Bet();
-        User user = userRepository.findById(betRequestDTO.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Event event = eventRepository.findById(betRequestDTO.eventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-        Wallet wallet = walletRepository.findByUserId(betRequestDTO.userId())
+        Wallet wallet = walletRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         Bet savedBet = null;
         bet.setAmount(betRequestDTO.amount());
