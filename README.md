@@ -120,7 +120,16 @@ cd Moabet_API
 mvn spring-boot:run
 ```
 
-A API sobe em `http://localhost:8080`. O banco H2 (em memória) é populado do zero a cada execução — use os endpoints de registro para criar usuários de teste.
+A API sobe em `http://localhost:8080`. O banco H2 (em memória) é populado do zero a cada execução.
+
+Um usuário **ADMIN** é criado automaticamente na inicialização, pronto para testes:
+
+```
+email: admin@moabet.com
+senha: 123456
+```
+
+Para testar como um usuário comum, use o endpoint `POST /api/auth/register` para criar sua própria conta.
 
 Console do H2 disponível em `http://localhost:8080/h2-console`.
 
