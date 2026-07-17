@@ -82,6 +82,9 @@ public class EventService {
         }
 
         public void deleteEvent(Long id) {
+                eventRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
                 eventRepository.deleteById(id);
         }
 }
