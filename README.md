@@ -42,13 +42,13 @@ Controller → Service → Repository
 
 ### Entidades principais
 
-| Entidade | Descrição |
-|---|---|
-| `User` | Usuário do sistema, com role (`ADMIN`/`USER`) |
-| `Wallet` | Carteira do usuário (relação 1:1 com `User`), guarda o saldo |
-| `Transaction` | Histórico de movimentações (`DEPOSIT`, `WITHDRAWAL`, `BET`, `WIN`) |
-| `Event` | Evento apostável, com odds e status (`OPEN`, `CLOSED`, `FINISHED`) |
-| `Bet` | Aposta de um usuário em um evento, com status (`PENDING`, `WON`, `LOST`) |
+| Entidade      | Descrição                                                                |
+| ------------- | ------------------------------------------------------------------------ |
+| `User`        | Usuário do sistema, com role (`ADMIN`/`USER`)                            |
+| `Wallet`      | Carteira do usuário (relação 1:1 com `User`), guarda o saldo             |
+| `Transaction` | Histórico de movimentações (`DEPOSIT`, `WITHDRAWAL`, `BET`, `WIN`)       |
+| `Event`       | Evento apostável, com odds e status (`OPEN`, `CLOSED`, `FINISHED`)       |
+| `Bet`         | Aposta de um usuário em um evento, com status (`PENDING`, `WON`, `LOST`) |
 
 ---
 
@@ -67,43 +67,65 @@ Controller → Service → Repository
 
 ### Auth (`/api/auth`)
 
-| Método | Rota | Acesso |
-|---|---|---|
-| POST | `/register` | Público |
-| POST | `/login` | Público |
+| Método | Rota        | Acesso  |
+| ------ | ----------- | ------- |
+| POST   | `/register` | Público |
+| POST   | `/login`    | Público |
 
 ### Users (`/api/users`)
 
-| Método | Rota | Acesso |
-|---|---|---|
-| GET | `/users` | ADMIN |
-| GET | `/users/{id}` | ADMIN ou o próprio usuário |
+| Método | Rota          | Acesso                     |
+| ------ | ------------- | -------------------------- |
+| GET    | `/users`      | ADMIN                      |
+| GET    | `/users/{id}` | ADMIN ou o próprio usuário |
 | DELETE | `/users/{id}` | ADMIN ou o próprio usuário |
 
 ### Events (`/api/events`)
 
-| Método | Rota | Acesso |
-|---|---|---|
-| POST | `/events/create` | ADMIN |
-| GET | `/events` | Autenticado |
-| GET | `/events/{id}` | Autenticado |
-| GET | `/events/{id}/bets` | ADMIN |
-| PUT | `/events/{id}/finish` | ADMIN |
-| DELETE | `/events/{id}` | ADMIN |
+| Método | Rota                  | Acesso      |
+| ------ | --------------------- | ----------- |
+| POST   | `/events/create`      | ADMIN       |
+| GET    | `/events`             | Autenticado |
+| GET    | `/events/{id}`        | Autenticado |
+| GET    | `/events/{id}/bets`   | ADMIN       |
+| PUT    | `/events/{id}/finish` | ADMIN       |
+| DELETE | `/events/{id}`        | ADMIN       |
 
 ### Transactions (`/api/transactions`)
 
-| Método | Rota | Acesso |
-|---|---|---|
-| POST | `/transactions/{walletId}/deposit` | ADMIN ou dono da carteira |
+| Método | Rota                               | Acesso                    |
+| ------ | ---------------------------------- | ------------------------- |
+| POST   | `/transactions/{walletId}/deposit` | ADMIN ou dono da carteira |
 
 ### Bets (`/api/bets`)
 
-| Método | Rota | Acesso |
-|---|---|---|
-| POST | `/bets` | Autenticado |
+| Método | Rota    | Acesso      |
+| ------ | ------- | ----------- |
+| POST   | `/bets` | Autenticado |
 
-> ⚠️ Documentação completa com exemplos de request/response disponível na [collection do Postman](#) *(em breve)*.
+> ⚠️ Documentação completa com exemplos de request/response disponível na [collection do Postman](postman\MoaBet.postman_collection)
+
+---
+
+## 🧪 Testes
+
+O projeto conta com uma suíte de **testes unitários** usando JUnit 5 e Mockito, cobrindo todos os Services da aplicação com isolamento total de dependências externas (banco de dados, contexto de segurança).
+
+**Cobertura:**
+
+- `BetService` — criação de aposta, validação de saldo, validação de status do evento
+- `EventService` — criação, finalização (com resolução de apostas), busca, listagem e exclusão
+- `UserService` — criação de usuário/carteira, busca (com validação de existência de usuário e carteira), listagem, exclusão
+- `TransactionService` — depósito e crédito de ganhos
+- `AuthService` — login com validação de credenciais
+
+Cada Service tem cenários de **sucesso** e de **erro** (recurso não encontrado, regra de negócio violada), garantindo que efeitos colaterais (salvar no banco, gerar token, etc.) só acontecem quando deveriam.
+
+Rodar os testes:
+
+```bash
+mvn test
+```
 
 ---
 
@@ -143,7 +165,7 @@ Console do H2 disponível em `http://localhost:8080/h2-console`.
 - [x] Bean Validation com tratamento de erros centralizado
 - [x] Migração de `Double` para `BigDecimal` em valores monetários
 - [x] Prevenção de IDOR em endpoints sensíveis
-- [ ] Testes unitários (JUnit + Mockito)
+- [x] Testes unitários (JUnit + Mockito)
 - [ ] Migração para MySQL/PostgreSQL com Docker
 - [ ] CI/CD com GitHub Actions
 - [ ] Verificação de email no registro
