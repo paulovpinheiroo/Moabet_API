@@ -7,7 +7,8 @@ Simulador de apostas esportivas desenvolvido em Spring Boot, com autenticação 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.14-brightgreen?logo=springboot&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-blue?logo=springsecurity&logoColor=white)
-![H2](https://img.shields.io/badge/Database-H2-lightgrey?logo=h2&logoColor=white)
+![MySQL](https://img.shields.io/badge/Database-MySQL%208-lightgrey?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)
 ![Maven](https://img.shields.io/badge/Build-Maven-C71A36?logo=apachemaven&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -131,18 +132,39 @@ mvn test
 
 ## 🛠️ Rodando localmente
 
-Pré-requisitos: **Java 21** e **Maven**.
+Pré-requisitos: **Java 21**, **Maven** e **Docker** (com Docker Compose).
 
 ```bash
 # Clone o repositório
 git clone https://github.com/paulovpinheiroo/Moabet_API.git
 cd Moabet_API
+```
 
-# Rode a aplicação
+**1. Configure as variáveis de ambiente**
+
+Copie o `.env.example` para `.env` e ajuste as credenciais:
+
+```bash
+cp .env.example .env
+```
+
+Copie também o `application.properties.example` para `application.properties` (dentro de `src/main/resources`) e ajuste usuário/senha para bater com o `.env`.
+
+**2. Suba o banco de dados**
+
+```bash
+docker-compose up -d
+```
+
+Isso sobe um container MySQL 8, criando o banco e um usuário de aplicação (`moabet_app`) automaticamente na primeira execução.
+
+**3. Rode a aplicação**
+
+```bash
 mvn spring-boot:run
 ```
 
-A API sobe em `http://localhost:8080`. O banco H2 (em memória) é populado do zero a cada execução.
+A API sobe em `http://localhost:8080`. O schema é criado automaticamente pelo Hibernate na primeira execução.
 
 Um usuário **ADMIN** é criado automaticamente na inicialização, pronto para testes:
 
@@ -152,8 +174,6 @@ senha: 123456
 ```
 
 Para testar como um usuário comum, use o endpoint `POST /api/auth/register` para criar sua própria conta.
-
-Console do H2 disponível em `http://localhost:8080/h2-console`.
 
 ---
 
@@ -166,7 +186,7 @@ Console do H2 disponível em `http://localhost:8080/h2-console`.
 - [x] Migração de `Double` para `BigDecimal` em valores monetários
 - [x] Prevenção de IDOR em endpoints sensíveis
 - [x] Testes unitários (JUnit + Mockito)
-- [ ] Migração para MySQL/PostgreSQL com Docker
+- [x] Migração para MySQL com Docker Compose
 - [ ] CI/CD com GitHub Actions
 - [ ] Verificação de email no registro
 
@@ -174,4 +194,4 @@ Console do H2 disponível em `http://localhost:8080/h2-console`.
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Paulão** ([@paulovpinheiroo](https://github.com/paulovpinheiroo)) como projeto de estudo em Spring Boot, durante o curso de Análise e Desenvolvimento de Sistemas.
+Desenvolvido por **Paulo** ([@paulovpinheiroo](https://github.com/paulovpinheiroo)) como projeto de estudo em Spring Boot, durante o curso de Análise e Desenvolvimento de Sistemas.
