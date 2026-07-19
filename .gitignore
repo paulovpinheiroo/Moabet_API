@@ -1,6 +1,6 @@
 #.env
 moabet/src/main/resources/application.properties
-
+.env
 # Compiled class file
 *.class
 

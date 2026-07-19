@@ -1,9 +1,10 @@
-spring.datasource.url=jdbc:h2:mem:moabet
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.h2.console.enabled=true
-spring.jpa.hibernate.ddl-auto=create-drop
+spring.application.name=moabet
+spring.datasource.url=jdbc:mysql://localhost:3307/moabet?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=moabet_app
+spring.datasource.password=senha_app_aqui
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 
 api.security.token.secret=your-secret-key-here
